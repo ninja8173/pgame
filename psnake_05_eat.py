@@ -101,12 +101,10 @@ while True:
             draw(c_idx,r_idx,GRAY, 1)
 
     for food in foods:
-        one_rect = (food[0]*CELL_SIZE, food[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE)
-        pygame.draw.rect(screen, GREEN, one_rect)
+        draw(food[0], food[1], GREEN)
 
     for body in bodies:
-        one_rect = (body[0]*CELL_SIZE,body[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE)
-        pygame.draw.rect(screen, BLUE, one_rect)
+        draw(body[0], body[1],BLUE)
 
     #점수 출력
     score_img = score_font.render(f"SCORE: {score}", True, YELLOW)
