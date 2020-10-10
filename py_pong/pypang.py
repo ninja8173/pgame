@@ -60,9 +60,10 @@ balls.append(
         "pos_x" :50,
         "pos_y" :50,
         "img_idx" :0,
-        "to x" :3,
-        "to y" :-6,
-        "init_spd" : ball_speed_y[0]
+        "to_x" :3,
+        "to_"
+        "y" :-6,
+        "init_spd_y" : ball_speed_y[0]
     }
 )
 
@@ -99,14 +100,40 @@ while running:
     #무기 위치 조정
     weapons = [[w[0], w[1]-weapon_speed] for w in weapons]
 
-    #천장에 닿은 ㄴ무기 제거
+    #천장에 닿은 무기 제거
     weapons = [[w[0], w[1]] for w in weapons if w[1] > 0]
+
+    for ball_idx, ball_one in enumerate(balls):
+        ball_pos_x = ball_one['pos_x']
+        ball_pos_y = ball_one['pos_y']
+        ball_img_idx = ball_one['img_idx']
+
+        ball_size = ball_images[ball_img_idx].get_rect().size
+        ball_width = ball_size[0]
+        ball_height = ball_size[1]
+
+        if ball_pos_y > screen_height - stage_height - ball_height:
+            ball_one['to_y'] = ball_one['init_spd_y']
+        else:
+            ball_one['to_y'] += 0.5
+        ball_one['pos_x'] += ball_one['to_x']
+        ball_one['pos_y'] += ball_one['to_y']
+        #print(ball_idx, ball_one)
+        #input("---중지---")
 
     screen.blit(bg, (0,0))
     for one in weapons:
         screen.blit(weapon, (one[0], one[1]))
     screen.blit(stage, (0,screen_height - stage_height))
     screen.blit(character,  (character_x_pos, character_y_pos))
+
+    for idx, one in enumerate(balls):
+        ball_pos_x = one['pos_x']
+        ball_pos_y = one['pos_y']
+        ball_img_idx = one['img_idx']
+        screen.blit(ball_images[ball_img_idx], (ball_pos_x, ball_pos_y))
+
     pygame.display.update()
+
 #파이게임 종료
 pygame.quit()
