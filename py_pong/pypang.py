@@ -62,7 +62,7 @@ balls.append(
         "img_idx" :0,
         "to x" :3,
         "to y" :-6,
-        "init_spd" : ball_speed_y[0]:
+        "init_spd" : ball_speed_y[0]
     }
 )
 
