@@ -30,12 +30,19 @@ stage_img = pygame.image.load(os.path.join(img_path, "stage.png"))
 stage_height = stage_img.get_rect().size[1]
 
 character_img = pygame.image.load(os.path.join(img_path, "character.png"))
-character_rect = character_img.get_rect()
+character_rect = character_img.get_rect().size
 character_width = character_rect[0]
 character_height = character_rect[1]
 character_pos_x = screen_width // 2 - character_width // 2
 character_pos_y = screen_height - stage_height - character_height
 character_speed = 0
+
+weapon_img = pygame.image.load(os.path.join(img_path, "weapon.png"))
+weapon_width = weapon_img.get_rect().size[0]
+weapon_pos_x = character_pos_x + character_width // 2 - weapon_width // 2
+weapon_pos_y =character_pos_y
+weapon_speed = 10
+weapons = []
 
 #게임 루프
 running = True
@@ -50,16 +57,28 @@ while running:
                 character_speed = 5
             elif event.key == pygame.K_LEFT:
                 character_speed = -5
+            elif event.key == pygame.K_SPACE:
+                weapon_pos_x = character_pos_x + character_width // 2 - weapon_width // 2
+                weapon_pos_y = character_pos_y
+                weapons.append([weapon_pos_x, weapon_pos_y])
+                #print(weapons)
         if event.type == pygame.KEYUP:
-            character_speed = 0
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                character_speed = 0
 
     character_pos_x = character_pos_x + character_speed
     if character_pos_x < 0 : character_pos_x = 0
-    if character_pos_x > screen_width:
+    if character_pos_x > screen_width-character_width:
         character_pos_x = screen_width - character_width
+
+    #무기 이동
+    weapons = [[w[0], w[1]-10] for w in weapons]
+    weapons = [[w[0], w[1]] for w in weapons if w[1] > 0]
 
     #화면 출력
     screen.blit(background_img, (0, 0))
+    for one in weapons:
+        screen.blit(weapon_img, (one[0], one[1]))
     screen.blit(stage_img, (0, screen_height - stage_height))
     screen.blit(character_img, (character_pos_x, character_pos_y))
 
