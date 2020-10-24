@@ -18,6 +18,9 @@ screen_size = (screen_width, screen_height)
 screen = pygame.display.set_mode(screen_size)
 pygame.display.set_caption("pypang!!")
 
+#FPS (Frame per second)
+clock = pygame.time.Clock()
+
 #이미지 불러오기
 cur_path = os.path.dirname(__file__)
 img_path = os.path.join(cur_path, "imges")
@@ -32,13 +35,28 @@ character_width = character_rect[0]
 character_height = character_rect[1]
 character_pos_x = screen_width // 2 - character_width // 2
 character_pos_y = screen_height - stage_height - character_height
+character_speed = 0
 
 #게임 루프
 running = True
 while running:
+    clock.tick(120)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:
+                character_speed = 5
+            elif event.key == pygame.K_LEFT:
+                character_speed = -5
+        if event.type == pygame.KEYUP:
+            character_speed = 0
+
+    character_pos_x = character_pos_x + character_speed
+    if character_pos_x < 0 : character_pos_x = 0
+    if character_pos_x > screen_width:
+        character_pos_x = screen_width - character_width
 
     #화면 출력
     screen.blit(background_img, (0, 0))
