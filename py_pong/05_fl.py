@@ -64,6 +64,14 @@ balls = [{
 remove_ball_idx = -1
 remove_weapon_idx = -1
 
+#폰트 설정 및 타이머 초기화
+game_font = pygame.font.Font(None, 40)
+
+total_time = 30
+start_time = pygame.time.get_ticks()
+
+game_result = 'GAME OVER'
+
 #게임 루프
 running = True
 while running:
@@ -87,7 +95,8 @@ while running:
                 character_speed = 0
 
     character_pos_x = character_pos_x + character_speed
-    if character_pos_x < 0 : character_pos_x = 0
+    if character_pos_x < 0:
+        character_pos_x = 0
     if character_pos_x > screen_width-character_width:
         character_pos_x = screen_width - character_width
 
@@ -111,15 +120,15 @@ while running:
         cur_ball['pos_x'] += cur_ball['to_x']
         cur_ball['pos_y'] += cur_ball['to_y']
 
+    character_rect = character_img.get_rect()
+    character_rect.top = character_pos_y
+    character_rect.left = character_pos_x
+
     #충돌 처리
     for idx_ball, one_ball in enumerate(balls):
         one_ball_rect = ball_img[one_ball['img_idx']].get_rect()
         one_ball_rect.top = one_ball['pos_y']
         one_ball_rect.left = one_ball['pos_x']
-
-        character_rect = character_img.get_rect()
-        character_rect.top = character_pos_y
-        character_rect.left = character_pos_x
 
         if one_ball_rect.colliderect(character_rect):
             running = False
@@ -137,7 +146,7 @@ while running:
                 if one_ball['img_idx'] < 3:
                     one_ball_width = one_ball_rect.size[0]
                     one_ball_height = one_ball_rect.size[1]
-                    small_ball_rect = ball_img[one_ball['img_idx']+1].get_rect().size
+                    small_ball_rect = ball_img[one_ball['img_idx'] +1].get_rect().size
                     small_ball_width = small_ball_rect[0]
                     small_ball_height = small_ball_rect[1]
 
@@ -158,12 +167,16 @@ while running:
                         'init_spd_y': ball_spd_y[one_ball['img_idx'] + 1]
                     })
                 break
+
         if remove_weapon_idx > -1:
             del weapons[remove_weapon_idx]
             remove_weapon_idx = -1
         if remove_ball_idx > -1:
             del balls[remove_ball_idx]
             remove_ball_idx = -1
+            if len(balls) == 0:
+                game_result = "YOU WIN"
+                running = False
 
     #화면 출력
     screen.blit(background_img, (0, 0))
@@ -174,8 +187,26 @@ while running:
     screen.blit(stage_img, (0, screen_height - stage_height))
     screen.blit(character_img, (character_pos_x, character_pos_y))
 
+    #타이머 출력
+    elapsed_time = (pygame.time.get_ticks() - start_time) / 1000
+    timer = game_font.render("time: {}".format(int(total_time - elapsed_time)),True, (255, 255, 0))
+    screen.blit(timer, (10, 10))
+
+    if int(total_time - elapsed_time) < -1:
+        game_result = "TIME_OVER"
+        start_time = pygame.time.get_tricks()
+        running = False
+
     #화면 업데이트
     pygame.display.update()
+
+#메세지 출력
+msg = game_font.render(game_result, True, (255, 255, 0))
+msg_rect = msg.get_rect(center = (screen_width//2, screen_height//2))
+screen.blit(msg, msg_rect)
+pygame.display.update()
+
+pygame.time.delay(2000)
 
 #파이게임 종료
 pygame.quit()
