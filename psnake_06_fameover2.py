@@ -100,7 +100,7 @@ while True:
 
     screen.fill(BLACK)
 
-    #격자 글기
+    #격자 그리기
     for c_idx in range(COL_COUNT):
         for r_idx in range(ROW_COUNT):
             rect = (c_idx*CELL_SIZE, r_idx*CELL_SIZE , CELL_SIZE, CELL_SIZE)
